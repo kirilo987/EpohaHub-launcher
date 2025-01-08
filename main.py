@@ -1,75 +1,80 @@
-import os
 import json
 import uuid
 import requests
-import zipfile
+import subprocess
+import os
+import shutil
 
-# Директория лаунчера
+# Директория для лаунчера
 LAUNCHER_DIR = os.path.expandvars(r"%APPDATA%\.epohahublauncher")
+GAME_DIR = os.path.join(LAUNCHER_DIR, "game")
 CONFIG_FILE = os.path.join(LAUNCHER_DIR, "config.json")
-MODS_DIR = os.path.join(LAUNCHER_DIR, "mods")
 
-# Створення папок
+# Створення директорій
 os.makedirs(LAUNCHER_DIR, exist_ok=True)
-os.makedirs(MODS_DIR, exist_ok=True)
+os.makedirs(GAME_DIR, exist_ok=True)
 
 # 1. Запит ніку та збереження UUID
 if not os.path.exists(CONFIG_FILE):
-    nickname = input("Введіть свій нікнейм: ")
-    user_uuid = str(uuid.uuid4())
-    config = {"nickname": nickname, "uuid": user_uuid}
-    with open(CONFIG_FILE, "w") as f:
-        json.dump(config, f)
+    config = {}
 else:
     with open(CONFIG_FILE, "r") as f:
         config = json.load(f)
+
+if 'nickname' not in config:
+    nickname = input("Введіть свій нікнейм: ")
+    user_uuid = str(uuid.uuid4())
+    config['nickname'] = nickname
+    config['uuid'] = user_uuid
+    with open(CONFIG_FILE, "w") as f:
+        json.dump(config, f)
+    print(f"Привіт, {config['nickname']}! Ваш UUID: {config['uuid']}")
+else:
     print(f"Привіт, {config['nickname']}! Ваш UUID: {config['uuid']}")
 
-# 2. Завантаження та встановлення Forge
-def install_forge(version="1.19.2"):
-    forge_url = f"https://files.minecraftforge.net/maven/net/minecraftforge/forge/{version}/forge-{version}-installer.jar"
-    forge_path = os.path.join(LAUNCHER_DIR, "forge-installer.jar")
-    print("Завантаження Forge...")
-    response = requests.get(forge_url)
-    if response.status_code == 200:
-        with open(forge_path, "wb") as f:
-            f.write(response.content)
-        print("Forge завантажено.")
+# 2. Завантаження Java 17 якщо її немає
+
+def is_java_17_installed():
+    try:
+        # Перевіряємо версію Java
+        output = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT, text=True)
+        if "17" in output:
+            print("Java 17 вже встановлена.")
+            return True
+        else:
+            print("Java 17 не встановлена.")
+            return False
+    except FileNotFoundError:
+        print("Java не знайдена на комп'ютері.")
+        return False
+
+if not is_java_17_installed():
+    print("Запуск іншого скрипта для встановлення Java 17...")
+    # Запустіть інший Python-скрипт
+    os.system("python java17download.py")
+else:
+    print("Продовження роботи програми...")
+
+# 3. Завантаження Forge 1.19.2
+
+# Шлях до папки та файлу Forge
+APPDATA_PATH = os.getenv('APPDATA')
+TARGET_FOLDER = os.path.join(APPDATA_PATH, ".epohahublauncher")
+TARGET_FILE = os.path.join(TARGET_FOLDER, "Forge-1.19.2.jar")
+
+# Шлях до скрипта, який потрібно запустити, якщо файл відсутній
+SECONDARY_SCRIPT = "forge-download.py"
+
+def main():
+    if os.path.exists(TARGET_FILE):
+        print(f"Forge файл знайдено: {TARGET_FILE}")
     else:
-        print("Помилка завантаження Forge!")
+        print(f"Forge файл не знайдено. Запуск іншого скрипта: {SECONDARY_SCRIPT}")
+        try:
+            subprocess.run(["python", SECONDARY_SCRIPT], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Помилка при запуску скрипта {SECONDARY_SCRIPT}: {e}")
 
-install_forge()
-
-# 3. Інтеграція зі skLauncher (el.by) для скінів
-def download_skin(nickname):
-    skin_url = f"https://skins.el.by/{nickname}.png"
-    skin_path = os.path.join(LAUNCHER_DIR, "skin.png")
-    response = requests.get(skin_url)
-    if response.status_code == 200:
-        with open(skin_path, "wb") as f:
-            f.write(response.content)
-        print(f"Скін завантажено для {nickname}.")
-    else:
-        print("Не вдалося завантажити скін.")
-
-download_skin(config["nickname"])
-
-# 4. Синхронізація модів із базою даних
-def sync_mods(server_url="http://example.com/api/mods"):
-    print("Синхронізація модів...")
-    response = requests.get(server_url)
-    if response.status_code == 200:
-        mods = response.json()
-        for mod in mods:
-            mod_path = os.path.join(MODS_DIR, mod["filename"])
-            if not os.path.exists(mod_path):
-                print(f"Завантаження мода: {mod['name']}...")
-                mod_data = requests.get(mod["url"])
-                with open(mod_path, "wb") as f:
-                    f.write(mod_data.content)
-        print("Моди синхронізовані.")
-    else:
-        print("Помилка підключення до сервера модів.")
-
-sync_mods()
+if __name__ == "__main__":
+    main()
 
