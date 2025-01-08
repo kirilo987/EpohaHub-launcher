@@ -78,3 +78,22 @@ def main():
 if __name__ == "__main__":
     main()
 
+# 4. Створення профілю
+
+try:
+    subprocess.run(["python", "profile.py"], check=True)
+except subprocess.CalledProcessError as e:
+    print(f"Помилка при запуску скрипта java17download.py: {e}")
+
+# 4. Установка Forge 1.19.2
+
+def install_forge():
+    print("Запуск інсталятора Forge...")
+    try:
+        subprocess.run(["java", "-jar", TARGET_FILE], check=True)
+        print("Установлення Forge успішно завершено.")
+    except subprocess.CalledProcessError as e:
+        print(f"Під час запуску ��нсталятора Forge сталася помилка: {e}")
+
+install_forge()
+
