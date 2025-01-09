@@ -36,8 +36,8 @@ else:
 
 def is_java_17_installed():
     try:
-        # Перевіряємо версію Java
         output = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT, text=True)
+        print(f"Вихідна інформація про версію Java: {output}")
         if "17" in output:
             print("Java 17 вже встановлена.")
             return True
@@ -47,13 +47,16 @@ def is_java_17_installed():
     except FileNotFoundError:
         print("Java не знайдена на комп'ютері.")
         return False
+    except subprocess.CalledProcessError as e:
+        print(f"Помилка при виконанні команди перевірки версії Java: {e}")
+        return False
 
 if not is_java_17_installed():
-    print("Запуск іншого скрипта для встановлення Java 17...")
-    # Запустіть інший Python-скрипт
-    os.system("python java17download.py")
-else:
-    print("Продовження роботи програми...")
+    print("Запуск скрипта для встановлення Java 17...")
+    try:
+        os.system("python java17download.py")
+    except Exception as e:
+        print(f"Помилка при запуску скрипта java17download.py: {e}")
 
 # 3. Завантаження Forge 1.19.2
 
@@ -93,7 +96,7 @@ def install_forge():
         subprocess.run(["java", "-jar", TARGET_FILE], check=True)
         print("Установлення Forge успішно завершено.")
     except subprocess.CalledProcessError as e:
-        print(f"Під час запуску ��нсталятора Forge сталася помилка: {e}")
+        print(f"Під час запуску інсталятора Forge сталася помилка: {e}")
 
 install_forge()
 

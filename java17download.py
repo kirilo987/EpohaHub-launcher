@@ -3,10 +3,10 @@ import subprocess
 import platform
 import requests
 import shutil
+from tqdm import tqdm  # Потрібно встановити пакет: pip install tqdm
 
 def is_java_17_installed():
     try:
-        # Перевіряємо версію Java
         output = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT, text=True)
         if "17" in output:
             print("Java 17 вже встановлена.")
@@ -21,28 +21,36 @@ def is_java_17_installed():
 def download_java_17():
     system = platform.system().lower()
     java_download_url = ""
+    file_name = ""
 
-    # Визначаємо правильне посилання залежно від ОС
     if "windows" in system:
         java_download_url = "https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.exe"
         file_name = "java17-installer.exe"
     elif "linux" in system:
         java_download_url = "https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz"
         file_name = "java17-linux.tar.gz"
-    elif "darwin" in system:  # macOS
+    elif "darwin" in system:
         java_download_url = "https://download.oracle.com/java/17/latest/jdk-17_macos-x64_bin.dmg"
         file_name = "java17-macos.dmg"
     else:
         print("Невідома операційна система.")
-        return
+        return None
 
-    # Завантажуємо файл
     print(f"Завантаження Java 17 з {java_download_url}...")
     response = requests.get(java_download_url, stream=True)
     if response.status_code == 200:
+        total_size = int(response.headers.get('content-length', 0))
         download_path = os.path.join(os.getcwd(), file_name)
-        with open(download_path, "wb") as file:
-            shutil.copyfileobj(response.raw, file)
+        with open(download_path, "wb") as file, tqdm(
+                desc=f"Завантаження {file_name}",
+                total=total_size,
+                unit='iB',
+                unit_scale=True,
+                unit_divisor=1024,
+        ) as bar:
+            for data in response.iter_content(chunk_size=1024):
+                size = file.write(data)
+                bar.update(size)
         print(f"Java 17 завантажена: {download_path}")
         return download_path
     else:
@@ -58,14 +66,15 @@ def install_java_17(file_path):
     elif "linux" in system:
         print("Розпаковка Java 17...")
         subprocess.run(["tar", "-xvf", file_path, "-C", "/usr/local"], shell=True)
-    elif "darwin" in system:  # macOS
+    elif "darwin" in system:
         print("Відкриття DMG для встановлення Java 17...")
         subprocess.run(["open", file_path], shell=True)
     else:
         print("Встановлення Java не підтримується на цій ОС.")
 
-# Основна логіка
 if not is_java_17_installed():
     installer_path = download_java_17()
     if installer_path:
         install_java_17(installer_path)
+        print("Java 17 встановлена. Будь ласка, перезапустіть програму.")
+        input("Натисніть будь-яку клавішу для закриття...")
