@@ -42,8 +42,7 @@ python main.py
 ---
 
 ## 🎵 Музичне натхнення
-Лаунчер був створений під впливом мелодії [TRASH CAN SONG]([https://www.youtube.com/watch?v=M02WlP-ZwD4](https://youtu.be/M02WlP-ZwD4?si=7zrl1FWWnrGlxHHZ)). Ви можете увімкнути цей плейлист для занурення в атмосферу:
-<iframe width="767" height="431" src="https://www.youtube.com/embed/M02WlP-ZwD4" title="Honkai Star Rail Animation: TRASH CAN SONG ■ w Elsie Lovelock, Michael Kovach, Kathy-chan ■ HoYoFair" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+Лаунчер був створений під впливом мелодії [TRASH CAN SONG]([https://www.youtube.com/watch?v=M02WlP-ZwD4]
 
 ---
 
