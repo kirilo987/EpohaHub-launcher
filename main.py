@@ -78,10 +78,6 @@ if __name__ == "__main__":
 
 # 4. Завантаження Forge 1.19.2
 
-import os
-import sys
-import requests
-
 def print_progress_bar(iteration, total, length=50):
     percent = ("{0:.1f}").format(100 * (iteration / float(total)))
     filled_length = int(length * iteration // total)
@@ -176,6 +172,6 @@ def sync_files():
 sync_files()
 
 # 8. Запуск гри
-
+#Воно кароче поки не робе не скоро зделаю но в test.py є поки накидки
 
 
