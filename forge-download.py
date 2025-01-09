@@ -29,7 +29,7 @@ def download_file(url, target_path):
             progress_bar.update(len(chunk))
 
 if __name__ == "__main__":
-    print("Starting download of Forge 1.19.2...")
+    print("Початок завантаження Forge 1.19.2...")
     try:
         download_file(FORGE_URL, TARGET_FILE)
         print(f"Завантаження успішно завершено! Файл збережено в: {TARGET_FILE}")
