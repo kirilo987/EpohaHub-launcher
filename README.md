@@ -1,67 +1,68 @@
+
 # 🛠️ EpohaHub Launcher
 
-**EpohaHub Launcher** – це унікальний Minecraft лаунчер, створений для максимально зручного запуску гри з модифікаціями Forge 1.19.2. Лаунчер автоматизує встановлення необхідних компонентів, таких як Java 17, Forge, і моди, щоб гравці могли насолоджуватися грою без зайвих турбот.
+**EpohaHub Launcher** is a unique Minecraft launcher designed for the most convenient way to launch the game with Forge 1.19.2 modifications. The launcher automates the installation of necessary components such as Java 17, Forge, and mods, allowing players to enjoy the game without extra hassle.
 
 ---
 
-## 📌 Особливості
+## 📌 Features
 
-- **Інтуїтивно зрозумілий процес налаштування:**
-  - Автоматичне завантаження та встановлення Java 17, якщо її немає.
-  - Завантаження Forge 1.19.2 та налаштування гри.
-  - Синхронізація модів з GitHub-репозиторію.
-  
-- **Управління профілями:**
-  - Збереження унікального ніка гравця.
-  - Генерація UUID для кожного користувача.
+- **User-friendly setup process:**
+  - Automatic download and installation of Java 17 if it's not already installed.
+  - Downloading Forge 1.19.2 and configuring the game.
+  - Synchronizing mods from a GitHub repository.
 
-- **Простота використання:**
-  - Не потрібно вручну шукати моди або встановлювати додаткові компоненти – лаунчер робить усе самостійно.
+- **Profile management:**
+  - Saving the player's unique nickname.
+  - Generating a UUID for each user.
+
+- **Ease of use:**
+  - No need to manually search for mods or install additional components – the launcher does everything for you.
 
 ---
 
-## 🚀 Як встановити та використовувати
+## 🚀 How to Install and Use
 
-### 1. Скачайте та встановіть Python 3.13+
-Переконайтеся, що Python встановлений, а шлях до нього додано в змінні середовища.
+### 1. Download and install Python 3.13+
+Ensure Python is installed, and its path is added to the environment variables.
 
-### 2. Запуск лаунчера
-Запустіть файл `main.py` через Python:
+### 2. Launch the launcher
+Run the `main.py` file via Python:
 ```bash
 py main.py
 ```
 
-### 3. Дочекайтеся завершення всіх процесів:
-- Перевірка Java.
-- Завантаження Forge та модів.
-- Створення профілю гравця.
+### 3. Wait for all processes to complete:
+- Checking Java.
+- Downloading Forge and mods.
+- Creating a player profile.
 
-### 4. Насолоджуйтеся грою!
-Лаунчер готовий до використання. Гру можна запускати після всіх налаштувань.
-
----
-
-## 🎵 Музичне натхнення
-Лаунчер був створений під впливом мелодії [TRASH CAN SONG](https://www.youtube.com/watch?v=M02WlP-ZwD4)
+### 4. Enjoy the game!
+The launcher is ready to use. The game can be launched after all the configurations are done.
 
 ---
 
-## 🛠️ Технічні деталі
+## 🎵 Musical Inspiration
+The launcher was created under the influence of the melody [TRASH CAN SONG](https://www.youtube.com/watch?v=M02WlP-ZwD4)
 
-### Основний функціонал:
-1. **Завантаження та перевірка Java:**
-   - Якщо Java 17 відсутня, лаунчер автоматично завантажує її через скрипт.
+---
 
-2. **Синхронізація модів:**
-   - Лаунчер клонує репозиторій модів із GitHub і копіює файли до відповідної папки.
+## 🛠️ Technical Details
 
-3. **Установка Forge:**
-   - Forge 1.19.2 завантажується з офіційного джерела та встановлюється автоматично.
+### Core functionality:
+1. **Downloading and checking Java:**
+   - If Java 17 is missing, the launcher automatically downloads it via a script.
 
-4. **Управління директоріями:**
-   - Лаунчер створює необхідні папки та файли у `%APPDATA%\.epohahublauncher`.
+2. **Mod synchronization:**
+   - The launcher clones a mod repository from GitHub and copies the files to the appropriate folder.
 
-### Залежності:
+3. **Forge installation:**
+   - Forge 1.19.2 is downloaded from an official source and installed automatically.
+
+4. **Directory management:**
+   - The launcher creates necessary folders and files in `%APPDATA%\.epohahublauncher`.
+
+### Dependencies:
 - Python 3.13+
 - Java 17
 - Git
@@ -69,16 +70,16 @@ py main.py
 ---
 
 ## 📋 TODO
-- Реалізувати функціонал автоматичного запуску гри.
-- Додати підтримку різних версій Forge.
-- Розширити можливості профілю гравця.
+- Implement automatic game launch functionality.
+- Add support for different Forge versions.
+- Expand player profile capabilities.
 
 ---
 
-## 🤝 Контакти
-Автор: **Kxysl1k**  
+## 🤝 Contacts
+Author: **Kxysl1k**  
 GitHub: [kirilo987](https://github.com/kirilo987)
 
 ---
 
-Насолоджуйтеся грою з **EpohaHub Launcher**! 🕹️
+Enjoy your game with **EpohaHub Launcher**! 🕹️
