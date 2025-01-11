@@ -3,10 +3,9 @@ import uuid
 import requests
 import subprocess
 import os
-import shutil
 import sys
-import stat
-import errno
+import zipfile
+from tqdm import tqdm
 
 # Директория для лаунчера
 LAUNCHER_DIR = os.path.expandvars(r"%APPDATA%\.epohahublauncher")
@@ -129,47 +128,56 @@ except subprocess.CalledProcessError as e:
 
 # 7. Завантаження модів
 
-# URL репозиторію
-repo_url = "https://github.com/kirilo987/mods.git"
-# Локальний шлях для клонування репозиторію
-local_repo_path = os.path.join(os.getenv('APPDATA'), '.epohahublauncher', 'temp_repo')
-# Шлях для вигрузки файлів
-destination_path = os.path.join(os.getenv('APPDATA'), '.epohahublauncher', 'game')
+GAME_FOLDER = os.path.expandvars(r"%APPDATA%\roaming\.epohahublaunher\game")
+DROPBOX_FILES = {
+    "mods.zip": "https://www.dropbox.com/scl/fo/mewqtgcfe381xqtfetq7t/AH2cLAfh1WRBUXEPSw-LbVM?rlkey=g0i5rxod3deh648hnvzs8dmuy&st=bagav94e&dl=1",  # Посилання на моди
+    "config.zip": "https://www.dropbox.com/scl/fo/csgsulr4xd7b9evph9b2y/AJTxVLm91iMpkkUfdKs4I5g?rlkey=8vjz6rna0oibwxf8tuwvwppxe&st=lpy91tu4&dl=1"  # Посилання на конфігурації
+}
 
-def handle_remove_readonly(func, path, exc):
-    excvalue = exc[1]
-    if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
-        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
-        func(path)
+def download_file(url, destination):
+    """Завантаження файлу за вказаним URL з прогрес-баром."""
+    response = requests.get(url, stream=True)
+    total_size = int(response.headers.get('content-length', 0))  # Загальний розмір файлу
+    block_size = 1024  # Розмір блоку
+    t = tqdm(total=total_size, unit='B', unit_scale=True, desc=f"Завантаження {os.path.basename(destination)}")
+
+    with open(destination, 'wb') as file:
+        for chunk in response.iter_content(block_size):
+            t.update(len(chunk))
+            file.write(chunk)
+    t.close()
+
+    if t.n != total_size:
+        print("Попередження: Завантажено не всі дані!")
     else:
-        raise
+        print(f"Файл успішно завантажено: {destination}")
 
-def sync_files():
-    print("Видалення старої копії репозиторію...")
-    if os.path.exists(local_repo_path):
-        shutil.rmtree(local_repo_path, onerror=handle_remove_readonly)
+def extract_zip(file_path, extract_to):
+    """Розпаковка ZIP-архіву у вказану папку."""
+    with zipfile.ZipFile(file_path, 'r') as zip_ref:
+        zip_ref.extractall(extract_to)
+        print(f"Файли розпаковано у: {extract_to}")
 
-    print("БУДЬ ЛАСКА НЕ ВИМИКАЙТЕ ЦЕ\nКлонування репозиторію з модами...")
-    subprocess.run(["git", "clone", repo_url, local_repo_path])
+def setup_game():
+    """Основна функція для завантаження та встановлення модів і конфігурацій."""
+    if not os.path.exists(GAME_FOLDER):
+        os.makedirs(GAME_FOLDER)
+        print(f"Створено папку гри: {GAME_FOLDER}")
 
-    files = [f for f in os.listdir(local_repo_path) if f != '.git']
-    total_files = len(files)
+    for file_name, url in DROPBOX_FILES.items():
+        local_file_path = os.path.join(GAME_FOLDER, file_name)
+        print(f"Завантаження файлу: {file_name}")
+        download_file(url, local_file_path)
 
-    print("Копіювання файлів до призначеного шляху...")
-    for i, item in enumerate(files, 1):
-        source = os.path.join(local_repo_path, item)
-        destination = os.path.join(destination_path, item)
+        # Якщо файл ZIP, розпакувати його
+        if file_name.endswith(".zip"):
+            print(f"Розпаковка архіву: {file_name}")
+            extract_zip(local_file_path, GAME_FOLDER)
+            os.remove(local_file_path)  # Видалення архіву після розпаковки
 
-        if os.path.isdir(source):
-            shutil.copytree(source, destination, dirs_exist_ok=True)
-        else:
-            shutil.copy2(source, destination)
+if __name__ == "__main__":
+    setup_game()
 
-        print_progress_bar(i, total_files)
-
-    print("\nСинхронізація завершена!")
-
-sync_files()
 
 # 8. Запуск гри
 #Воно кароче поки не робе не скоро зделаю но в test.py є поки накидки
