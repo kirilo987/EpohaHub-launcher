@@ -61,20 +61,20 @@ if not is_java_17_installed():
         print(f"Помилка при запуску скрипта java17download.py: {e}")
     sys.exit("Java 17 не встановлена. Будь ласка, перезапустіть програму після встановлення Java 17.")
 
-# 3. Заванатження Git
-
-def check_git():
-    try:
-        subprocess.run(["git", "--version"], check=True)
-        print("Git вже встановлено.")
-    except subprocess.CalledProcessError:
-        print("Git не знайдено. Запуск файлу GitDownload.py для встановлення Git.")
-        subprocess.run([sys.executable, "git-download.py"])
-
-if __name__ == "__main__":
-    check_git()
-
-
+# 3. Заванатження Git. Прощитався вже не нада
+#
+#def check_git():
+#    try:
+#        subprocess.run(["git", "--version"], check=True)
+#        print("Git вже встановлено.")
+#    except subprocess.CalledProcessError:
+#        print("Git не знайдено. Запуск файлу GitDownload.py для встановлення Git.")
+#        subprocess.run([sys.executable, "git-download.py"])
+#
+#if __name__ == "__main__":
+#    check_git()
+#
+#
 # 4. Завантаження Forge 1.19.2
 
 def print_progress_bar(iteration, total, length=50):
@@ -126,13 +126,18 @@ try:
 except subprocess.CalledProcessError as e:
     print(f"Помилка при запуску Forge-1.19.2.jar: {e}")
 
-# 7. Завантаження модів
+# 7. Завантаження та встановлення модів та конфігурацій
 
-GAME_FOLDER = os.path.expandvars(r"%APPDATA%\roaming\.epohahublaunher\game")
+GAME_FOLDER = os.path.expandvars(r"%APPDATA%\.epohahublauncher\game")
+MODS_FOLDER = os.path.join(GAME_FOLDER, "mods")
+CONFIG_FOLDER = os.path.join(GAME_FOLDER, "config")
 DROPBOX_FILES = {
-    "mods.zip": "https://www.dropbox.com/scl/fo/mewqtgcfe381xqtfetq7t/AH2cLAfh1WRBUXEPSw-LbVM?rlkey=g0i5rxod3deh648hnvzs8dmuy&st=bagav94e&dl=1",  # Посилання на моди
-    "config.zip": "https://www.dropbox.com/scl/fo/csgsulr4xd7b9evph9b2y/AJTxVLm91iMpkkUfdKs4I5g?rlkey=8vjz6rna0oibwxf8tuwvwppxe&st=lpy91tu4&dl=1"  # Посилання на конфігурації
+    "mods.zip": "https://www.dropbox.com/scl/fo/mewqtgcfe381xqtfetq7t/AH2cLAfh1WRBUXEPSw-LbVM?rlkey=g0i5rxod3deh648hnvzs8dmuy&st=bagav94e&dl=1",
+    # Посилання на моди
+    "config.zip": "https://www.dropbox.com/scl/fo/csgsulr4xd7b9evph9b2y/AJTxVLm91iMpkkUfdKs4I5g?rlkey=8vjz6rna0oibwxf8tuwvwppxe&st=lpy91tu4&dl=1"
+    # Посилання на конфігурації
 }
+
 
 def download_file(url, destination):
     """Завантаження файлу за вказаним URL з прогрес-баром."""
@@ -152,11 +157,13 @@ def download_file(url, destination):
     else:
         print(f"Файл успішно завантажено: {destination}")
 
+
 def extract_zip(file_path, extract_to):
     """Розпаковка ZIP-архіву у вказану папку."""
     with zipfile.ZipFile(file_path, 'r') as zip_ref:
         zip_ref.extractall(extract_to)
         print(f"Файли розпаковано у: {extract_to}")
+
 
 def setup_game():
     """Основна функція для завантаження та встановлення модів і конфігурацій."""
@@ -164,20 +171,37 @@ def setup_game():
         os.makedirs(GAME_FOLDER)
         print(f"Створено папку гри: {GAME_FOLDER}")
 
+    if not os.path.exists(MODS_FOLDER):
+        os.makedirs(MODS_FOLDER)
+        print(f"Створено папку модів: {MODS_FOLDER}")
+
+    if not os.path.exists(CONFIG_FOLDER):
+        os.makedirs(CONFIG_FOLDER)
+        print(f"Створено конфіг: {CONFIG_FOLDER}")
+
     for file_name, url in DROPBOX_FILES.items():
-        local_file_path = os.path.join(GAME_FOLDER, file_name)
+        if "mods" in file_name:
+            local_file_path = os.path.join(MODS_FOLDER, file_name)
+            extract_to = MODS_FOLDER
+        elif "config" in file_name:
+            local_file_path = os.path.join(CONFIG_FOLDER, file_name)
+            extract_to = CONFIG_FOLDER
+        else:
+            local_file_path = os.path.join(GAME_FOLDER, file_name)
+            extract_to = GAME_FOLDER
+
         print(f"Завантаження файлу: {file_name}")
         download_file(url, local_file_path)
 
         # Якщо файл ZIP, розпакувати його
         if file_name.endswith(".zip"):
             print(f"Розпаковка архіву: {file_name}")
-            extract_zip(local_file_path, GAME_FOLDER)
+            extract_zip(local_file_path, extract_to)
             os.remove(local_file_path)  # Видалення архіву після розпаковки
+
 
 if __name__ == "__main__":
     setup_game()
-
 
 # 8. Запуск гри
 #Воно кароче поки не робе не скоро зделаю но в test.py є поки накидки

@@ -1,5 +1,5 @@
 
-# 🛠️ EpohaHub Launcher
+# 🛠️ EpohaHub Launcher [![wakatime](https://wakatime.com/badge/user/ad26c7ba-455a-4c67-a816-cb69c75e863f/project/6e1e19c2-bbc9-49cd-ac13-85500a45fffb.svg)](https://wakatime.com/projects/EpohaHubLauncher)
 
 **EpohaHub Launcher** is a unique Minecraft launcher designed for the most convenient way to launch the game with Forge 1.19.2 modifications. The launcher automates the installation of necessary components such as Java 17, Forge, and mods, allowing players to enjoy the game without extra hassle.
 
@@ -78,7 +78,7 @@ The launcher was created under the influence of the melody [TRASH CAN SONG](http
 
 ## 🤝 Contacts
 Author: **Kxysl1k**  
-GitHub: [kirilo987](https://github.com/kirilo987)
+GitHub: [kirilo987](https://github.com/kirilo987) [![Netlify Status](https://api.netlify.com/api/v1/badges/ffc07ad9-907e-46c2-81a1-2280a6fb9a2f/deploy-status)](https://kxysl1k.netlify.app)
 
 ---
 
